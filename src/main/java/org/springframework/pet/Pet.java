@@ -81,5 +81,15 @@ public class Pet extends NamedEntity {
 	public void addVisit(Visit visit) {
 		getVisits().add(visit);
 	}
+@ManyToOne
+    @JoinColumn(name = "owner_id")
+    private Owner owner;
 
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+
+    public Owner getOwner() {
+        return this.owner;
+    }
 }

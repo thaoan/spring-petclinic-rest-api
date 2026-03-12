@@ -20,8 +20,7 @@ import java.util.Locale;
  *
  * @author Anuj Ashok Potdar
  */
-@Configuration
-@SuppressWarnings("unused")
+@Configuration @SuppressWarnings("")
 public class WebConfiguration implements WebMvcConfigurer {
 
 	/**

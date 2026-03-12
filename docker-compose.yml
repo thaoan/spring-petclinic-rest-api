@@ -1,21 +1,24 @@
 services:
-  mysql:
-    image: mysql:9.5
+  mysql-db:
+    image: mysql:8.0
+    container_name: petclinic-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: petclinic
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: petuser
+      MYSQL_PASSWORD: petpassword
     ports:
       - "3306:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=
-      - MYSQL_ALLOW_EMPTY_PASSWORD=true
-      - MYSQL_USER=petclinic
-      - MYSQL_PASSWORD=petclinic
-      - MYSQL_DATABASE=petclinic
     volumes:
-      - "./conf.d:/etc/mysql/conf.d:ro"
-  postgres:
-    image: postgres:18.1
+      - db_data:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    container_name: petclinic-adminer
+    restart: always
     ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_PASSWORD=petclinic
-      - POSTGRES_USER=petclinic
-      - POSTGRES_DB=petclinic
+      - "8080:8080"
+
+volumes:
+  db_data:

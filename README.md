@@ -1,174 +1,151 @@
-# Spring PetClinic Sample Application [![Build Status](https://github.com/spring-projects/spring-petclinic/actions/workflows/maven-build.yml/badge.svg)](https://github.com/spring-projects/spring-petclinic/actions/workflows/maven-build.yml)[![Build Status](https://github.com/spring-projects/spring-petclinic/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/spring-projects/spring-petclinic/actions/workflows/gradle-build.yml)
+# Spring PetClinic REST API
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/spring-projects/spring-petclinic) [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=7517918)
+A modern RESTful API implementation of the classic Spring PetClinic application. Transformed from a monolithic server-side rendered application into a high-performance, scalable API built with Java 21 and Spring Boot 3, following industry best practices.
 
-## Understanding the Spring Petclinic application with a few diagrams
+## Key Features
 
-See the presentation here:  
-[Spring Petclinic Sample Application (legacy slides)](https://speakerdeck.com/michaelisvy/spring-petclinic-sample-application?slide=20)
+This project delivers a fully refactored backend-first implementation:
 
-> **Note:** These slides refer to a legacy, pre–Spring Boot version of Petclinic and may not reflect the current Spring Boot–based implementation.  
-> For up-to-date information, please refer to this repository and its documentation.
+- **Domain-Driven Architecture** - Clear separation of concerns with Owner, Pet, Visit, and Vet domains
+- **Complete CRUD Operations** - Full POST, GET, PUT, and DELETE implementations for all entities
+- **Data Pagination** - Spring Data Pageable integration for the Owners endpoint to ensure optimal performance with large datasets
+- **Interactive API Documentation** - Swagger UI (OpenAPI 3) for real-time testing and exploration
+- **Modern Java** - Java Records for DTOs (Data Transfer Objects) ensuring immutability and clean code
+- **Global Exception Handling** - Standardized JSON error responses for 404 Not Found and 400 Bad Request (Validation) scenarios
+- **Production-Ready** - Comprehensive logging, validation, and best practices throughout
 
+## Technology Stack
 
-## Run Petclinic locally
+| Component | Version |
+|-----------|---------|
+| **Language** | Java 21 |
+| **Framework** | Spring Boot 3.2.4 |
+| **Persistence** | Spring Data JPA / Hibernate |
+| **Database** | MySQL 9.5 (H2 support for development) |
+| **API Documentation** | SpringDoc OpenAPI |
+| **Build Tool** | Maven |
 
-Spring Petclinic is a [Spring Boot](https://spring.io/guides/gs/spring-boot) application built using [Maven](https://spring.io/guides/gs/maven/) or [Gradle](https://spring.io/guides/gs/gradle/).
-Java 17 or later is required for the build, and the application can run with Java 17 or newer.
+## Project Structure
 
-You first need to clone the project locally:
+The project follows a **Domain Slicing** pattern for improved maintainability and scalability:
+
+```
+src/main/java/org/springframework/samples/petclinic/
+├── owner/   # Owner management domain
+├── pet/     # Pet and pet type management
+├── visit/   # Medical visit history
+├── vet/     # Veterinarian and specialty management
+└── dto/     # Data Transfer Objects (Request/Response Records)
+```
+
+## Getting Started
+
+### Prerequisites
+
+- Java 21 or higher
+- Docker (optional, for MySQL)
+
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/spring-projects/spring-petclinic.git
 cd spring-petclinic
 ```
-If you are using Maven, you can start the application on the command-line as follows:
 
-```bash
-./mvnw spring-boot:run
-```
-With Gradle, the command is as follows:
-
-```bash
-./gradlew bootRun
-```
-
-You can then access the Petclinic at <http://localhost:8080/>.
-
-<img width="1042" alt="petclinic-screenshot" src="https://cloud.githubusercontent.com/assets/838318/19727082/2aee6d6c-9b8e-11e6-81fe-e889a5ddfded.png">
-
-You can, of course, run Petclinic in your favorite IDE.
-See below for more details.
-
-## Building a Container
-
-There is no `Dockerfile` in this project. You can build a container image (if you have a docker daemon) using the Spring Boot build plugin:
-
-```bash
-./mvnw spring-boot:build-image
-```
-
-## In case you find a bug/suggested improvement for Spring Petclinic
-
-Our issue tracker is available [here](https://github.com/spring-projects/spring-petclinic/issues).
-
-## Database configuration
-
-In its default configuration, Petclinic uses an in-memory database (H2) which
-gets populated at startup with data. The h2 console is exposed at `http://localhost:8080/h2-console`,
-and it is possible to inspect the content of the database using the `jdbc:h2:mem:<uuid>` URL. The UUID is printed at startup to the console.
-
-A similar setup is provided for MySQL and PostgreSQL if a persistent database configuration is needed. Note that whenever the database type changes, the app needs to run with a different profile: `spring.profiles.active=mysql` for MySQL or `spring.profiles.active=postgres` for PostgreSQL. See the [Spring Boot documentation](https://docs.spring.io/spring-boot/how-to/properties-and-configuration.html#howto.properties-and-configuration.set-active-spring-profiles) for more detail on how to set the active profile.
-
-You can start MySQL or PostgreSQL locally with whatever installer works for your OS or use docker:
-
-```bash
-docker run -e MYSQL_USER=petclinic -e MYSQL_PASSWORD=petclinic -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=petclinic -p 3306:3306 mysql:9.5
-```
-
-or
-
-```bash
-docker run -e POSTGRES_USER=petclinic -e POSTGRES_PASSWORD=petclinic -e POSTGRES_DB=petclinic -p 5432:5432 postgres:18.1
-```
-
-Further documentation is provided for [MySQL](https://github.com/spring-projects/spring-petclinic/blob/main/src/main/resources/db/mysql/petclinic_db_setup_mysql.txt)
-and [PostgreSQL](https://github.com/spring-projects/spring-petclinic/blob/main/src/main/resources/db/postgres/petclinic_db_setup_postgres.txt).
-
-Instead of vanilla `docker` you can also use the provided `docker-compose.yml` file to start the database containers. Each one has a service named after the Spring profile:
+### 2. Start MySQL (Recommended)
 
 ```bash
 docker compose up mysql
 ```
 
-or
+### 3. Run the Application
 
 ```bash
-docker compose up postgres
+./mvnw spring-boot:run
 ```
 
-## Test Applications
+The application will start on `http://localhost:9090`
 
-At development time we recommend you use the test applications set up as `main()` methods in `PetClinicIntegrationTests` (using the default H2 database and also adding Spring Boot Devtools), `MySqlTestApplication` and `PostgresIntegrationTests`. These are set up so that you can run the apps in your IDE to get fast feedback and also run the same classes as integration tests against the respective database. The MySql integration tests use Testcontainers to start the database in a Docker container, and the Postgres tests use Docker Compose to do the same thing.
+## API Documentation
 
-## Compiling the CSS
+The entire API is documented and testable via Swagger UI:
 
-There is a `petclinic.css` in `src/main/resources/static/resources/css`. It was generated from the `petclinic.scss` source, combined with the [Bootstrap](https://getbootstrap.com/) library. If you make changes to the `scss`, or upgrade Bootstrap, you will need to re-compile the CSS resources using the Maven profile "css", i.e. `./mvnw package -P css`. There is no build profile for Gradle to compile the CSS.
+**Swagger UI:** [http://localhost:9090/swagger-ui.html](http://localhost:9090/swagger-ui.html)
 
-## Working with Petclinic in your IDE
+### API Endpoints
 
-### Prerequisites
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/owners?page=0&size=10` | List owners with pagination |
+| POST | `/api/v1/owners` | Create a new owner |
+| GET | `/api/v1/owners/{id}` | Get owner by ID |
+| PUT | `/api/v1/owners/{id}` | Update owner details |
+| DELETE | `/api/v1/owners/{id}` | Delete an owner |
+| GET | `/api/v1/pets` | List all pets |
+| POST | `/api/v1/pets` | Register a new pet |
+| PUT | `/api/v1/visits/{id}` | Update visit details |
+| DELETE | `/api/v1/vets/{id}` | Remove a veterinarian |
 
-The following items should be installed in your system:
+## Building and Testing
 
-- Java 17 or newer (full JDK, not a JRE)
-- [Git command line tool](https://help.github.com/articles/set-up-git)
-- Your preferred IDE
-  - Eclipse with the m2e plugin. Note: when m2e is available, there is a m2 icon in `Help -> About` dialog. If m2e is
-  not there, follow the installation process [here](https://www.eclipse.org/m2e/)
-  - [Spring Tools Suite](https://spring.io/tools) (STS)
-  - [IntelliJ IDEA](https://www.jetbrains.com/idea/)
-  - [VS Code](https://code.visualstudio.com)
+### Build the Project
 
-### Steps
+```bash
+./mvnw clean package
+```
 
-1. On the command line run:
+### Run Tests
 
-    ```bash
-    git clone https://github.com/spring-projects/spring-petclinic.git
-    ```
+```bash
+./mvnw test
+```
 
-1. Inside Eclipse or STS:
+### Run with Different Databases
 
-    Open the project via `File -> Import -> Maven -> Existing Maven project`, then select the root directory of the cloned repo.
+**H2 (In-Memory - Development):**
+```bash
+./mvnw spring-boot:run
+```
 
-    Then either build on the command line `./mvnw generate-resources` or use the Eclipse launcher (right-click on project and `Run As -> Maven install`) to generate the CSS. Run the application's main method by right-clicking on it and choosing `Run As -> Java Application`.
+**MySQL:**
+```bash
+docker compose up mysql
+./mvnw spring-boot:run -Dspring.profiles.active=mysql
+```
 
-1. Inside IntelliJ IDEA:
+**PostgreSQL:**
+```bash
+docker compose up postgres
+./mvnw spring-boot:run -Dspring.profiles.active=postgres
+```
 
-    In the main menu, choose `File -> Open` and select the Petclinic [pom.xml](pom.xml). Click on the `Open` button.
+## Docker Support
 
-    - CSS files are generated from the Maven build. You can build them on the command line `./mvnw generate-resources` or right-click on the `spring-petclinic` project then `Maven -> Generates sources and Update Folders`.
+### Build Docker Image
 
-    - A run configuration named `PetClinicApplication` should have been created for you if you're using a recent Ultimate version. Otherwise, run the application by right-clicking on the `PetClinicApplication` main class and choosing `Run 'PetClinicApplication'`.
+```bash
+docker build -t spring-petclinic .
+```
 
-1. Navigate to the Petclinic
+### Run with Docker Compose
 
-    Visit [http://localhost:8080](http://localhost:8080) in your browser.
+```bash
+docker compose up
+```
 
-## Looking for something in particular?
-
-|Spring Boot Configuration | Class or Java property files  |
-|--------------------------|---|
-|The Main Class | [PetClinicApplication](https://github.com/spring-projects/spring-petclinic/blob/main/src/main/java/org/springframework/samples/petclinic/PetClinicApplication.java) |
-|Properties Files | [application.properties](https://github.com/spring-projects/spring-petclinic/blob/main/src/main/resources) |
-|Caching | [CacheConfiguration](https://github.com/spring-projects/spring-petclinic/blob/main/src/main/java/org/springframework/samples/petclinic/system/CacheConfiguration.java) |
-
-## Interesting Spring Petclinic branches and forks
-
-The Spring Petclinic "main" branch in the [spring-projects](https://github.com/spring-projects/spring-petclinic)
-GitHub org is the "canonical" implementation based on Spring Boot and Thymeleaf. There are
-[quite a few forks](https://spring-petclinic.github.io/docs/forks.html) in the GitHub org
-[spring-petclinic](https://github.com/spring-petclinic). If you are interested in using a different technology stack to implement the Pet Clinic, please join the community there.
-
-## Interaction with other open-source projects
-
-One of the best parts about working on the Spring Petclinic application is that we have the opportunity to work in direct contact with many Open Source projects. We found bugs/suggested improvements on various topics such as Spring, Spring Data, Bean Validation and even Eclipse! In many cases, they've been fixed/implemented in just a few days.
-Here is a list of them:
-
-| Name | Issue |
-|------|-------|
-| Spring JDBC: simplify usage of NamedParameterJdbcTemplate | [SPR-10256](https://github.com/spring-projects/spring-framework/issues/14889) and [SPR-10257](https://github.com/spring-projects/spring-framework/issues/14890) |
-| Bean Validation / Hibernate Validator: simplify Maven dependencies and backward compatibility |[HV-790](https://hibernate.atlassian.net/browse/HV-790) and [HV-792](https://hibernate.atlassian.net/browse/HV-792) |
-| Spring Data: provide more flexibility when working with JPQL queries | [DATAJPA-292](https://github.com/spring-projects/spring-data-jpa/issues/704) |
+This will start both the application and MySQL database.
 
 ## Contributing
 
-The [issue tracker](https://github.com/spring-projects/spring-petclinic/issues) is the preferred channel for bug reports, feature requests and submitting pull requests.
-
-For pull requests, editor preferences are available in the [editor config](.editorconfig) for easy use in common text editors. Read more and download plugins at <https://editorconfig.org>. All commits must include a __Signed-off-by__ trailer at the end of each commit message to indicate that the contributor agrees to the Developer Certificate of Origin.
-For additional details, please refer to the blog post [Hello DCO, Goodbye CLA: Simplifying Contributions to Spring](https://spring.io/blog/2025/01/06/hello-dco-goodbye-cla-simplifying-contributions-to-spring).
+Contributions are welcome! Please feel free to:
+- Open issues for bugs or feature requests
+- Submit pull requests with improvements
+- Suggest enhancements to the architecture or code quality
 
 ## License
 
-The Spring PetClinic sample application is released under version 2.0 of the [Apache License](https://www.apache.org/licenses/LICENSE-2.0).
+See [LICENSE.txt](LICENSE.txt) for details.
+
+---
+
+**Happy coding!** If you find this project helpful, please give it a star!
